@@ -1,22 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-
+import SearchBar from './components/SearchBar'
+import VideoList from './components/VideoList'
+import VideoItemsDetails from './components/VideoItemsDetails'
 import YTSearch from 'youtube-api-search'
-
 const API_KEY = 'AIzaSyBUW-2wjWAGxUp4VgoGIcvvDGqHGgZeaGU'
 
-YTSearch({key:API_KEY, term: 'surfboards'}, function (data) {
-	console.log(data)
-})
 
 
 
 class App extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			videos:[],
+			selectedVideo: null
+		}
+
+		YTSearch({key:API_KEY, term: 'surfboards'},  (data) => {
+			this.setState({
+				videos: data,
+				selectedVideo: data[0]
+			})
+			
+		})
+
+	}
+
   render() {
     return (
       <div>
-         <p> desde app </p>
+         <SearchBar />
+         <VideoItemsDetails video={this.state.selectedVideo}/>
+         <VideoList videos={this.state.videos} onVideoSelect={selectedVideo => this.setState({selectedVideo})} />
       </div>
     );
   }
